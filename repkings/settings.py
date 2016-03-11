@@ -14,7 +14,7 @@ import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
+PROJECT_ROOT = os.path.dirname(os.path.realpath(__file__))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.9/howto/deployment/checklist/
@@ -23,9 +23,25 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = '0d)alif@hv-5wgurglyh8gv0qagdan*=5%3n4ew*+655t--@c8'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = bool(os.environ.get('DEBUG', True))
+template_debug = bool(os.environ.get('TEMPLATE_DEBUG', DEBUG))
+TESTING = bool(os.environ.get('TESTING', False))
 
-ALLOWED_HOSTS = []
+# Global App Config
+APP_ENV = os.environ.get('APP_ENV', '').upper()
+
+STAGING = PRODUCTION = False
+
+if APP_ENV == 'STAGING':
+    STAGING = True
+elif APP_ENV == 'PRODUCTION':
+    PRODUCTION = True
+    DEBUG = template_debug = False
+else:
+    DEBUG = template_debug = True
+
+# Allowed Hosts
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'repkings.com', '.repkings.com', 'dev.repkings.com', 'staging.repkings.com']
 
 
 # Application definition
@@ -44,6 +60,7 @@ MIDDLEWARE_CLASSES = [
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
+    'slothauth.middleware.PasswordlessUserMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
@@ -64,6 +81,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
             ],
+            'debug': template_debug,
         },
     },
 ]
@@ -119,3 +137,220 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.9/howto/static-files/
 
 STATIC_URL = '/static/'
+
+#
+# Custom Settings
+#
+
+# My Apps
+
+INSTALLED_APPS += [
+    'django.contrib.sitemaps',
+    # custom apps
+    'accounts',
+    'bills',
+    'representatives',
+]
+
+ADMINS = [
+    ('Chris Del Guercio', 'cdelguercio@gmail.com'),
+]
+
+PROJECT_NAME = 'repkings'
+PROJECT_DOMAIN = 'repkings.com'
+
+VERSION = '0_1'
+
+if STAGING or PRODUCTION:
+    STATIC_ROOT = os.path.join(PROJECT_ROOT, "static")
+else:
+    STATIC_ROOT = os.path.join(PROJECT_ROOT, "static_collected")
+
+MEDIA_URL = '/media/'
+
+MEDIA_ROOT = os.path.join(PROJECT_ROOT, 'media')
+
+# Logging
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'filters': {
+        'require_debug_false': {
+            '()': 'django.utils.log.RequireDebugFalse'
+        }
+    },
+    'handlers': {
+        'null': {
+            'level': 'DEBUG',
+            'class': 'logging.NullHandler',
+        },
+        'console': {
+            'level': 'ERROR',
+            'class': 'logging.StreamHandler',
+            'formatter': 'simple'
+        },
+        'mail_admins': {
+            'level': 'ERROR',
+            'formatter': 'verbose',
+            'filters': ['require_debug_false'],
+            'class': 'django.utils.log.AdminEmailHandler'
+        },
+    },
+    'formatters': {
+        'verbose': {
+            'format': '%(levelname)s %(asctime)s %(filename)s %(lineno)d %(message)s'
+        },
+        'simple': {
+            'format': '%(levelname)s %(message)s'
+        },
+    },
+    'loggers': {}
+}
+
+LOGGING['loggers']['repkings'] = {
+    'handlers': ['mail_admins'],
+    'level': 'ERROR',
+    'propagate': True,
+}
+
+# Test logging
+
+LOGGING['loggers']['repkings-test'] = {
+    'handlers': ['console'],
+    'level': 'INFO',
+    'propagate': True,
+}
+
+# DisallowedHost
+
+LOGGING['loggers']['django.security.DisallowedHost'] = {
+    'handlers': ['null'],
+    'propagate': False,
+}
+
+# Django Request Error Logging
+
+LOGGING['loggers']['django.request'] = {
+    'handlers': ['mail_admins'],
+    'level': 'ERROR',
+    'propagate': True,
+}
+
+# Django Extensions
+
+INSTALLED_APPS += [
+    'django_extensions',
+]
+
+# SlothAuth
+
+INSTALLED_APPS += [
+    'slothauth',
+]
+
+AUTH_USER_MODEL = 'accounts.Account'
+AUTHENTICATION_BACKENDS = [
+    'slothauth.backends.PasswordlessAuthentication',
+    'django.contrib.auth.backends.ModelBackend',
+]
+
+MIDDLEWARE_CLASSES += [
+    'slothauth.middleware.ImpersonateMiddleware',
+]
+
+INSTALLED_APPS += [
+    'rest_framework',
+    'rest_framework.authtoken'
+]
+
+# GovTrack
+
+INSTALLED_APPS += [
+    'govtrack',
+]
+
+# Celery
+
+INSTALLED_APPS += [
+    'djcelery',
+]
+
+import djcelery
+import urlparse
+
+djcelery.setup_loader()
+
+redis_url = urlparse.urlparse(os.environ.get('REDIS_URL','redis://localhost:6379'))
+
+if os.environ.get('REPKINGS_REDIS_1_PORT_6379_TCP_ADDR', False):
+    # Fig
+    redis_url = urlparse.urlparse('redis://%s:6379/0' % os.environ['REPKINGS_REDIS_1_PORT_6379_TCP_ADDR'],)
+
+CACHES = {
+    'default': {
+        'BACKEND': 'redis_cache.RedisCache',
+        'LOCATION': '%s:%s' % (redis_url.hostname, redis_url.port),
+        'OPTIONS': {
+            'PASSWORD': redis_url.password,
+            'USERNAME': redis_url.username,
+            'DB': 0,
+        },
+    },
+}
+
+CELERYBEAT_SCHEDULER = "djcelery.schedulers.DatabaseScheduler"
+
+LOCAL_CACHE_ADDR = ('127.0.0.1:11211',)
+
+CACHE_PREFIX = 'rep:'
+if STAGING:
+    CACHE_PREFIX = 'reps:'
+elif PRODUCTION:
+    CACHE_PREFIX = 'repp:'
+elif TESTING:
+    CACHE_PREFIX = 'rept:'
+
+redis = redis_url.geturl()
+if STAGING or PRODUCTION:
+    redis = redis + '/0'
+    if not redis.startswith('redis'):
+        # Hacking
+        redis = 'redis://' + redis
+
+BROKER_URL = redis
+CELERY_RESULT_BACKEND = BROKER_URL
+
+if STAGING or PRODUCTION:
+    CELERY_DEFAULT_QUEUE = 'repkings-staging'
+    if PRODUCTION:
+        CELERY_DEFAULT_QUEUE = 'repkings-prod'
+else:
+    CELERY_DEFAULT_QUEUE = 'repkings-dev'
+    # Let celery tasks run locally and show errors
+    CELERY_ALWAYS_EAGER = True
+    CELERY_EAGER_PROPAGATES_EXCEPTIONS = True
+
+CELERY_QUEUES = {
+    CELERY_DEFAULT_QUEUE: {
+        'exchange': CELERY_DEFAULT_QUEUE,
+        'binding_key': CELERY_DEFAULT_QUEUE,
+    }
+}
+
+BROKER_TRANSPORT_OPTIONS = {'visibility_timeout': 3600 * 24 * 14}
+CELERY_TASK_RESULT_EXPIRES = 3600 * 24 * 14
+
+# Email
+
+EMAIL_USE_TLS = True
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'repkingsnotifications@gmail.com'
+EMAIL_HOST_PASSWORD = os.environ.get('REPKINGS_GMAIL_PASSWORD', '')
+DEFAULT_FROM_EMAIL = 'repkingsnotifications@gmail.com'
+
+ACCOUNT_EMAIL_DOMAIN = 'repkings.com'
+ACCOUNT_EMAIL_FROM = 'repkingsnotifications@gmail.com'
+ACCOUNT_EMAIL_PASSWORD_RESET_SUBJECT = 'Password Reset'
+ACCOUNT_EMAIL_PASSWORDLESS_LOGIN_SUBJECT = 'Your Login Link'

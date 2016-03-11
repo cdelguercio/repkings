@@ -1,1 +1,18 @@
-Django==1.9
+# App
+
+Django==1.9.2
+djangorestframework==3.3.2
+slothauth
+govtrack
+celery==3.1.20
+django-celery==3.1.17
+django-localflavor==1.2
+
+# Testing
+
+factory_boy==2.6.0
+
+# Utility
+
+django-extensions==1.6.1
+Werkzeug==0.11.3
