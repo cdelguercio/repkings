@@ -1,0 +1,22 @@
+{
+  "name": "GhostAudio",
+  "version": "0.1.0",
+  "homepage": "http://ghost.audio",
+  "authors": [
+    "Chris Del Guercio <cdelguercio@gmail.com>"
+  ],
+  "license": "Apache-2.0",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jquery": "^2.2.0",
+    "include-media": "^1.4.2",
+    "sass-easing": "^1.1.2"
+  },
+  "devDependencies": {}
+}

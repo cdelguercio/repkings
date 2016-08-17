@@ -3,7 +3,9 @@ from govtrack.api import GovTrackClient
 
 from django.core.exceptions import ObjectDoesNotExist
 
-from .models import Bill
+from representatives.models import Representative
+
+from .models import Bill, Vote
 
 
 @celery.task
@@ -37,12 +39,44 @@ def update_bills():
             db_bill.save()
 
         if changed:
-            if db_bill.current_status == Bill.BillStatus.PASSED_HOUSE or db_bill.current_status == Bill.BillStatus.FAILED_HOUSE:
-                pass
-                # TODO set votes for all congresspeople
-            elif db_bill.current_status == Bill.BillStatus.PASSED_SENATE or db_bill.current_status == Bill.BillStatus.FAILED_SENATE:
-                pass
-                # TODO set votes for all senators
+            votes = []
+
+            if db_bill.current_status == Bill.BillStatus.PASSED_HOUSE or \
+                    db_bill.current_status == Bill.BillStatus.FAILED_HOUSE or \
+                    db_bill.current_status == Bill.BillStatus.PASSED_SENATE or \
+                    db_bill.current_status == Bill.BillStatus.FAILED_SENATE:
+
+                # set votes for all congresspeople and senators
+                votes = client.vote({'related_bill': bill['id'], 'limit': 600})
+
+                for vote in votes:
+                    print vote
+                    vote_voters = client.vote_voter({'vote': vote['id'], 'limit': 600})
+
+                    for vote_voter in vote_voters:
+                        print vote_voter
+
+                        representative = Representative.objects.get(govtrack_id=vote_voter['person']['id'])
+
+                        try:
+                            Vote.objects.get(bill=db_bill, representative=representative)
+
+                        except ObjectDoesNotExist:
+
+                            vote_option = vote_voter['option']['key']
+
+                            if vote_option == '+':
+                                vote_value = Vote.VoteOption.AYE
+                            elif vote_option == '-':
+                                vote_value = Vote.VoteOption.NO
+                            elif vote_option == '0':
+                                vote_value = Vote.VoteOption.NOT_VOTING
+                            elif vote_option == 'P':
+                                vote_value = Vote.VoteOption.PRESENT
+                            else:
+                                raise Exception('Invalid vote_voters Option Key value')
+
+                            vote = Vote(bill=db_bill, vote=vote_value, representative=representative, vote_date=vote['created'])
 
 
 ###

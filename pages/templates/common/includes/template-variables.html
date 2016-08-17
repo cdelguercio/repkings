@@ -1,0 +1,11 @@
+{% load staticfiles %}
+
+<script type="text/javascript">
+    window.STATIC_URL = '{% static '' %}';
+    window.MEDIA_URL = '{{ MEDIA_URL }}';
+    window.CSRF = '{{ csrf_token }}';
+    window.PRODUCTION = '{{ PRODUCTION }}';
+    {% if request.user.is_authenticated %}
+    window.AUTHENTICATED = true;
+    {% endif %}
+</script>

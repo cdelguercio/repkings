@@ -1,0 +1,173 @@
+@import "compass/reset";
+@import "../bower_components/include-media/dist/_include-media";
+@import "../bower_components/sass-easing/_sass-easing.scss";
+
+// ----------------------------------------------------------------------
+// Font Sizes
+// ----------------------------------------------------------------------
+
+$regularSize: 12; //example
+
+// ----------------------------------------------------------------------
+// Font Families
+// ----------------------------------------------------------------------
+
+$font-light: Roboto-Light;
+$font-regular: Roboto-Regular;
+$font-medium: Roboto-Medium;
+$font-bold: Roboto-Bold;
+$font-black: Roboto-Black;
+
+// ----------------------------------------------------------------------
+// Colors
+// ----------------------------------------------------------------------
+
+$pure-white: #FFFFFF;
+$pure-black: #000000;
+
+$black: #000707;
+$darkest-grey: #272F2F;
+$darker-grey: #4A5353;
+$dark-grey: #7C8484;
+$grey: #AEB5B5;
+$light-grey: #C8CDCD;
+$lighter-grey: #E0E5E5;
+$white: #F0F5F5;
+
+$teal: #00A99D;
+$light-teal: #10CDBF;
+$magenta: #EA07FC;
+$purple: #BB07FC;
+$orange: #E75D29;
+$blue: #27ABE0;
+$yellow: #F5B907;
+$red: #DC0145;
+
+// ----------------------------------------------------------------------
+// Generic Styles
+// ----------------------------------------------------------------------
+
+strong {
+  font-family: $font-bold;
+}
+
+input[type="radio"] {
+  margin: 0px;
+}
+
+input:focus {
+  outline: none;
+}
+
+:invalid {
+  box-shadow: none;
+}
+
+:-moz-submit-invalid {
+  box-shadow: none;
+}
+
+:-moz-ui-invalid {
+  box-shadow:none;
+}
+
+// ----------------------------------------------------------------------
+// Z-index
+// ----------------------------------------------------------------------
+
+$modal-content: 10040;
+$modal-overlay: 10030;
+$header-container: 10020;
+$tooltip-triangle: 10013;
+$tooltip-content: 10012;
+$tooltip-container: 10011;
+$very-top: 10000;
+$top: 100;
+$just-above: 10;
+$middle: auto;
+$just-below: -10;
+$bottom: -100;
+$very-bottom: -10000;
+$page: -100000;
+
+// ----------------------------------------------------------------------
+// Mixins
+// ----------------------------------------------------------------------
+
+@mixin placeholder {
+  ::-webkit-input-placeholder {
+    @content
+  }
+  :-moz-placeholder {
+    @content
+  }
+  ::-moz-placeholder {
+    @content
+  }
+  :-ms-input-placeholder {
+    @content
+  }
+}
+
+@mixin background-clip($args...) {
+  -moz-background-clip: $args;     /* Firefox 3.6 */
+  -webkit-background-clip: $args;  /* Safari 4? Chrome 6? */
+  background-clip: $args + '-box';      /* Firefox 4, Safari 5, Opera 10, IE 9 */
+}
+
+@mixin transition($args...) {
+  -webkit-transition: $args;
+  -moz-transition: $args;
+  -ms-transition: $args;
+  -o-transition: $args;
+  transition: $args;
+}
+
+@mixin transform($args...) {
+  -webkit-transform: $args;
+  -moz-transform: $args;
+  -ms-transform: $args;
+  -o-transform: $args;
+  transform: $args;
+}
+
+@mixin flexbox-display-flex {
+  display: -webkit-box;
+  display: -moz-box;
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+}
+
+@mixin flexbox-flex-direction($arg) {
+  -webkit-flex-direction: $arg;
+  -moz-flex-direction: $arg;
+  -ms-flex-direction: $arg;
+  flex-direction: $arg;
+}
+
+@mixin flexbox-flex-wrap($arg) {
+  -webkit-flex-wrap: $arg;
+  -moz-flex-wrap: $arg;
+  -ms-flex-wrap: $arg;
+  flex-wrap: $arg;
+}
+
+@mixin flexbox-justify-content($arg) {
+  -webkit-justify-content: $arg;
+  -moz-justify-content: $arg;
+  -ms-justify-content: $arg;
+  justify-content: $arg;
+}
+
+@mixin flexbox-align-items($arg) {
+  -webkit-align-items: $arg;
+  -moz-align-items: $arg;
+  -ms-align-items: $arg;
+  align-items: $arg;
+}
+
+@mixin flexbox-shrink($arg) {
+  -webkit-flex-shrink: $arg;
+  flex-shrink: $arg;
+}

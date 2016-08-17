@@ -1,18 +1,18 @@
 # App
 
-Django==1.9.2
-djangorestframework==3.3.2
-slothauth
-govtrack
-celery==3.1.20
+Django==1.10
+djangorestframework==3.4.4
+slothauth==0.6.1
+govtrack==0.1
+celery==3.1.23
 django-celery==3.1.17
 django-localflavor==1.2
 
 # Testing
 
-factory_boy==2.6.0
+factory_boy==2.6.1
 
 # Utility
 
 django-extensions==1.6.1
-Werkzeug==0.11.3
+Werkzeug==0.11.9

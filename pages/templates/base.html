@@ -1,0 +1,15 @@
+{% load staticfiles %}
+<html>
+<head>
+    {% include 'common/includes/template-variables.html' %}
+    {% include 'common/includes/head.html' %}
+    {% block extra_head %}{% endblock %}
+</head>
+<body>
+    <div id="page_container">
+        <div id="page">
+            {% block content %}{% endblock %}
+        </div>
+    </div>
+</body>
+</html>

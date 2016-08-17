@@ -249,7 +249,18 @@ INSTALLED_APPS += [
     'slothauth',
 ]
 
+ACCOUNT_EMAIL_DOMAIN = PROJECT_DOMAIN
+
+ACCOUNT_EMAIL_PASSWORD_RESET_SUBJECT = 'Valence Password Reset'
+
+ACCOUNT_EMAIL_FROM = 'help@' + PROJECT_DOMAIN
+
+ACCOUNT_EMAIL_PASSWORDLESS_LOGIN_SUBJECT = 'Valence Login Link'
+
 AUTH_USER_MODEL = 'accounts.Account'
+
+# ACCOUNT_FORM = 'accounts.forms.CustomAccountForm'
+
 AUTHENTICATION_BACKENDS = [
     'slothauth.backends.PasswordlessAuthentication',
     'django.contrib.auth.backends.ModelBackend',

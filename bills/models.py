@@ -6,6 +6,7 @@ from representatives.models import Representative
 
 
 class Bill(models.Model):
+
     class BillStatus:
         NONE = 0
         INTRODUCED = 1
@@ -30,7 +31,7 @@ class Bill(models.Model):
     introduced_date = models.DateTimeField()
     current_status_date = models.DateTimeField()
     govtrack_id = models.IntegerField(null=True, blank=True)
-    date_created = models.DateTimeField()  # TODO mixin
+    date_created = models.DateTimeField(auto_now_add=True)  # TODO mixin
 
     @staticmethod
     def get_current_status_from_string(current_status):
@@ -51,9 +52,23 @@ class Bill(models.Model):
             return 0
 
 
-
 class Vote(models.Model):
+
+    class VoteOption:
+        NOT_VOTING = 0
+        PRESENT = 1
+        AYE = 2
+        NO = 3
+
+    VOTE_OPTION = (
+        (VoteOption.NOT_VOTING, 'Not Voting'),
+        (VoteOption.PRESENT, 'Present'),
+        (VoteOption.AYE, 'Aye'),
+        (VoteOption.NO, 'No'),
+    )
+
     representative = models.ForeignKey(Representative)
     bill = models.ForeignKey(Bill)
-    vote = models.NullBooleanField()
-    date_created = models.DateTimeField()  # TODO mixin
+    vote = models.IntegerField(default=VoteOption.NOT_VOTING, choices=VOTE_OPTION)
+    vote_date = models.DateTimeField()
+    date_created = models.DateTimeField(auto_now_add=True)  # TODO mixin
