@@ -1,0 +1,67 @@
+{% extends 'common/dashboard/auth.html' %}
+{% load staticfiles %}
+
+{% block authentication_title %}
+Ready to join the party?
+{% endblock %}
+
+{% block authentication_text %}
+Share your music with a community of like-minded independent artists.
+{% endblock %}
+
+{% block authentication_form %}
+<div class="authentication_form_title">
+    Sign Up
+</div>
+
+<div class="authentication_form_label">
+    USERNAME
+</div>
+<input [(ngModel)]="username" id="signup_username" name="username" class="authentication_form_input" placeholder="Username" type="text" (blur)="check_username(username);" (keyup.enter)="signup(email, password, password, display_name, username);" required />
+<div *ngIf="username_error_message != ''" class="authentication_form_error">{% verbatim %}{{username_error_message}}{% endverbatim %}</div>
+<div id="username_check_container" [ngClass]="{available: username_available, taken: username_available == false}">
+    <div id="username_check_text">
+        ghost.audio/<span id="username_check_username">{% verbatim %}{{ desired_username }}{% endverbatim %}</span>
+    </div>
+    <div id="username_check_alert_container">
+        <div id="username_check_taken_text">
+            Taken
+        </div>
+        <div id="username_check_taken_icon">
+            &#xf06a;
+        </div>
+        <div id="username_check_available_icon">
+            &#xf05d;
+        </div>
+    </div>
+</div>
+<div class="authentication_form_label">
+    EMAIL
+</div>
+<input [(ngModel)]="email" id="signup_email" name="email" class="authentication_form_input" placeholder="Email address" type="text" (keyup.enter)="signup(email, password, password, display_name, username);" required />
+<div *ngIf="email_error_message != ''" class="authentication_form_error">{% verbatim %}{{email_error_message}}{% endverbatim %}</div>
+<div class="authentication_form_label">
+    PASSWORD
+</div>
+<input [(ngModel)]="password" id="signup_password" name="password" class="authentication_form_input" placeholder="Password" type="password" (keyup.enter)="signup(email, password, password, display_name, username);" required />
+<div *ngIf="password_error_message != ''" class="authentication_form_error">{% verbatim %}{{password_error_message}}{% endverbatim %}</div>
+<div class="authentication_form_label">
+    DISPLAY NAME
+</div>
+<input [(ngModel)]="display_name" id="signup_display_name" name="display_name" class="authentication_form_input" placeholder="Display name (optional)" type="text" (keyup.enter)="signup(email, password, password, display_name, username);" />
+
+
+<button class="authentication_form_button" (click)="signup(email, password, password, display_name, username);" [disabled]="!(username && email && password)">
+    Create Account
+</button>
+
+<div class="authentication_form_extra_links">
+    <div class="authentication_form_extra_link_text">
+        Already have an account?
+    </div>
+    <a href="/login" class="authentication_form_extra_link">
+        Login
+    </a>
+</div>
+
+{% endblock %}

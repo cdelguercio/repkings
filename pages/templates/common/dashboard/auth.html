@@ -1,0 +1,16 @@
+{% load staticfiles %}
+
+<div id="authentication_content">
+    <div class="authentication_info_container">
+        <div class="authentication_info_title">
+            {% block authentication_title %}{% endblock %}
+        </div>
+        <div class="authentication_info_text">
+            {% block authentication_text %}{% endblock %}
+        </div>
+    </div>
+    <form #auth_form="ngForm" class="authentication_form_container">
+        {% block authentication_form %}{% endblock %}
+    </form>
+    <div class="bottom_spacer"></div>
+</div>

@@ -1,0 +1,45 @@
+{% extends 'common/dashboard/auth.html' %}
+{% load staticfiles %}
+
+{% block authentication_title %}
+Welcome back!
+{% endblock %}
+
+{% block authentication_text %}
+Share your music with a community of like-minded independent artists.
+{% endblock %}
+
+{% block authentication_form %}
+
+<div class="authentication_form_title">
+    Log In
+</div>
+
+<div class="authentication_form_label">
+    EMAIL
+</div>
+<input [(ngModel)]="email" id="login_email" name="email" class="authentication_form_input" placeholder="Email address" type="text" (keyup.enter)="login(email, password);" required />
+<div *ngIf="error_message != ''" class="authentication_form_error">{% verbatim %}{{error_message}}{% endverbatim %}</div>
+<a href="/reset-password" class="login_forgot_password_link">
+    Forgot password?
+</a>
+<div class="authentication_form_label">
+    PASSWORD
+</div>
+<input [(ngModel)]="password" id="login_password" name="password" class="authentication_form_input" placeholder="Password" type="password" (keyup.enter)="login(email, password);" required />
+<div *ngIf="error_message != ''" class="authentication_form_error">{% verbatim %}{{error_message}}{% endverbatim %}</div>
+
+<button class="authentication_form_button" (click)="login(email, password);" [disabled]="!(email && password)">
+    Let's Go
+</button>
+
+<div class="authentication_form_extra_links">
+    <div class="authentication_form_extra_link_text">
+        Don't have an account?
+    </div>
+    <a href="/signup" class="authentication_form_extra_link">
+        Sign Up
+    </a>
+</div>
+
+{% endblock %}

@@ -1,0 +1,76 @@
+{% load staticfiles %}
+
+<div class="header_spacer">
+
+</div>
+<div #header_menu_container class="header_menu_container" style="display: none;">
+    <div class="header_menu_triangle">
+
+    </div>
+    <div class="header_menu">
+        <a href="/u/{{ request.user.username }}" class="header_menu_link">
+            Profile
+        </a>
+        <a href="/settings" class="header_menu_link">
+            Settings
+        </a>
+        <a href="/logout" class="header_logout_button">
+            Log out
+        </a>
+    </div>
+</div>
+<div class="header">
+    <a href="/" class="header_logo_container">
+        <div class="header_logo">
+            GHOST AUDIO
+        </div>
+    </a>
+
+    {% if request.user.is_authenticated %}
+    <div class="header_right_links_container">
+        <div class="header_add_credits">
+            + Add Credits
+        </div>
+
+        <div class="header_profile_info_container">
+            <div class="header_credits_counter">
+                0 Credits
+            </div>
+            <div class="header_profile_button_container" (click)="toggle_header_menu();" [style.background-image]="'url(' + profile_image + ')'">
+
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="header_right_auth_container">
+        <a href="/signup" class="header_right_signup_link">
+            Sign Up
+        </a>
+        <a href="/login" class="header_right_login_link">
+            Log In
+        </a>
+    </div>
+    {% endif %}
+</div>
+<div class="header_search_and_extra_links_container">
+    <div class="header_search_container">
+        <input [value]="search_terms" #search_input class="header_search_input" placeholder="Search Songs" (keyup.enter)="search(search_input.value);" (keyup)="check_for_tags($event, search_input.value);" (keyup.esc)="$event.target.blur();" (blur)="hide_suggestion_box();" />
+        <div class="header_search_icon">
+            &#xf002;
+        </div>
+        <div class="header_suggestion_box" [style.display]="suggestion_box_display">
+            <div *ngFor="let search_suggestion of search_suggestions" class="header_suggestion">
+                #{% verbatim %}{{ search_suggestion.name }}{% endverbatim %}
+            </div>
+        </div>
+    </div>
+    <div class="header_extra_links_container">
+        <a href="/" class="header_extra_link">
+            &#xf025;
+        </a>
+
+        <a href="/{% if request.user.is_authenticated %}upload{% else %}signup{% endif %}" class="header_extra_link">
+            &#xf0ee;
+        </a>
+    </div>
+</div>

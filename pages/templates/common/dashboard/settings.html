@@ -1,0 +1,71 @@
+{% load staticfiles %}
+
+<div id="settings">
+    <div class="settings_header">
+        <a href="" class="settings_back_button_container">
+            <div class="settings_back_button_arrow">
+                &#xf104;
+            </div>
+            <div class="settings_back_button_text">
+                Back
+            </div>
+        </a>
+        <div class="settings_user_badge_container">
+            <div class="settings_user_badge_image" [style.background-image]="'url(' + profile_image + ')'">
+
+            </div>
+            <div class="settings_user_badge_text">
+                {% verbatim %}{{ display_name }}{% endverbatim %}
+            </div>
+        </div>
+    </div>
+    <div class="settings_content">
+        <div class="settings_input_group_container">
+            <div class="settings_input_group_header_container">
+                <div class="settings_input_group_label">
+                    PROFILE
+                </div>
+            </div>
+            <input #first_name class="settings_input_half_size" placeholder="First name" />
+            <input #last_name class="settings_input_half_size" placeholder="Last name" />
+            <input #email class="settings_input_full_size" placeholder="Email" />
+            <input #change_email_current_password class="settings_input_full_size" placeholder="Enter current password to change email" />
+        </div>
+        <div class="settings_input_group_container">
+            <div class="settings_input_group_header_container">
+                <div class="settings_input_group_label">
+                    PASSWORD
+                </div>
+                <a href="/reset-password" class="settings_input_group_extra_text">
+                    Forgot password?
+                </a>
+            </div>
+            <input #change_password_current_password class="settings_input_full_size" placeholder="Current password" />
+            <input #password class="settings_input_full_size" placeholder="New password" />
+            <input #password_repeat class="settings_input_full_size" placeholder="Confirm new password" />
+        </div>
+        <!--
+        <div class="settings_input_group_container">
+            <div class="settings_input_group_header_container">
+                <div class="settings_input_group_label">
+                    WALLET
+                </div>
+            </div>
+            <input class="settings_input_full_size" placeholder="Name on card" />
+            <input class="settings_input_full_size" placeholder="Credit card number" />
+            <div class="settings_input_label">
+                Expiry
+            </div>
+            <input class="settings_input_date_size" placeholder="mm/yyyy" />
+            <div class="settings_input_label">
+                CVV
+            </div>
+            <input class="settings_input_cvv_size" />
+        </div>
+        -->
+    </div>
+    <a class="settings_save_button" (click)="save_settings(first_name.value, last_name.value, email.value, change_email_current_password.value, change_password_current_password.value, password.value, password_repeat.value)">
+        Save
+    </a>
+    <div class="bottom_spacer"></div>
+</div>

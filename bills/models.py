@@ -31,6 +31,8 @@ class Bill(models.Model):
     introduced_date = models.DateTimeField()
     current_status_date = models.DateTimeField()
     govtrack_id = models.IntegerField(null=True, blank=True)
+    title = models.CharField(max_length=1000, null=True, blank=True)
+    title_without_number = models.CharField(max_length=1000, null=True, blank=True)
     date_created = models.DateTimeField(auto_now_add=True)  # TODO mixin
 
     @staticmethod

@@ -142,6 +142,10 @@ STATIC_URL = '/static/'
 # Custom Settings
 #
 
+# RepKings
+
+BILL_EMAIL_BATCH_DAYS = 5
+
 # My Apps
 
 INSTALLED_APPS += [
